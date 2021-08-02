@@ -19,7 +19,6 @@ idna-ssl==1.1.0
 multidict==5.1.0
 oauthlib==3.1.1
 packaging==21.0
-pkg-resources==0.0.0
 protobuf==3.17.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
