@@ -5,7 +5,9 @@ Simple bot to relay upcoming Google Calendar events.
 ## Setup
 
 ### Heroku
-This application is setup to be hosted through Heroku.
+This application is setup to be hosted through Heroku, a simple cloud platform.
+
+
 
 ### Discord
 Bot must be added to the server using Discord's developer portal.
