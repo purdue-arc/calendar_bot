@@ -11,10 +11,11 @@ The set schedule helps parametrize when updates are sent to discord.
 
 `send_updates.py` is currently written to obtain daily events, so the command should be scheduled to run daily.
 
-This application relies on two environment variables:
+This application relies on four environment variables:
 - `GOOGLE_SERVICE_ACCOUNT_JSON`: json string given by Google API service account
 - `CALENDAR_ID`: ID for respective Google Calendar
 - `DISCORD_TOKEN`: bot token given by Discord
+- `REDIS_URL`: URL for Redis file store (provided by Redis Heroku application)
 
 ## Usage
 
@@ -29,3 +30,5 @@ If working, the bot should reply with:
 ```
 Sending reminders in this channel.
 ```
+
+Calendar updates will be delivered on each run of `send_updates.py`.
