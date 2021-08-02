@@ -84,10 +84,12 @@ def construct_calendar_msg(calendar_event):
 
 @client.event
 async def on_ready():
+    print("Running calendar update")
     for guild in client.guilds:
         for text_channel in guild.text_channels:
             name_bytes = text_channel.name.encode('UTF-8')
             if active_channels is not None and name_bytes in active_channels:
+                print("Collecting events for {}".format(text_channel.name))
                 calendar_events = my_calendar.collect_today(15)
                 if not calendar_events:
                     # Commented out to reduce spam
@@ -96,10 +98,12 @@ async def on_ready():
                     # )
                     pass
                 else:
+                    print("Sending events to {}".format(text_channel.name))
                     for calendar_event in calendar_events:
                         await text_channel.send(
                             embed=construct_calendar_msg(calendar_event)
                         )
+    print("Calendar update finished")
     await client.close()
 
 if 'DISCORD_TOKEN' in os.environ:

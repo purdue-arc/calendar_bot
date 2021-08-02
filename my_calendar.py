@@ -20,12 +20,15 @@ def collect_today(n=5):
     """
     Gets n events within 24 hours of current time.
     """
+    print("Parsing date")
     start = datetime.datetime.utcnow()
     end = start + datetime.timedelta(1)
 
+    print("Checking calendar ID")
     if 'CALENDAR_ID' not in os.environ:
         sys.exit("CALENDAR_ID is not set.")
 
+    print("Obtaining and returing events")
     calendarId = os.environ['CALENDAR_ID']
     events_result = create_service().events().list(calendarId=calendarId,
                                                    timeMin=start.isoformat() + 'Z',
@@ -40,13 +43,17 @@ def collect_week(n=25):
     """
     Collects n google calendar events within a week of current time.
     """
+    print("Parsing date")
     start = datetime.datetime.utcnow()
     end = start + datetime.timedelta(week=1)
 
+    print("Checking calendar ID")
     if 'CALENDAR_ID' not in os.environ:
         sys.exit("CALENDAR_ID is not set.")
 
     calendarId = os.environ['CALENDAR_ID']
+
+    print("Obtaining and returing events")
     events_result = create_service().events().list(calendarId=calendarId,
                                                    timeMin=start.isoformat() + 'Z',
                                                    timeMax=end.isoformat() + 'Z',
