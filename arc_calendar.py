@@ -15,22 +15,19 @@ def collect_today(n=5):
     """
     Gets n events within 24 hours of current time.
     """
+
+    # Initialize service account credentials
     creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    # delegated_creds = creds.with_subject(SUBJECT)
-
     service = build('calendar', 'v3', credentials=creds)
 
     # Call the Calendar API
     start = datetime.datetime.utcnow()
     end = start + datetime.timedelta(1)
-    print('Getting the upcoming 10 events')
     events_result = service.events().list(calendarId=ARC_CALENDAR,
                                           timeMin=start.isoformat() + 'Z',
                                           timeMax=end.isoformat() + 'Z',
                                           maxResults=n, singleEvents=True,
                                           orderBy='startTime').execute()
     events = events_result.get('items', [])
-    if not events:
-        return None
     return events
