@@ -9,7 +9,7 @@ TIMEZONE_LEN = 6
 
 client = discord.Client()
 if 'DISCORD_CHANNELS' in os.environ:
-    active_channels = json.load(os.environ['DISCORD_CHANNELS'])
+    active_channels = json.loads(os.environ['DISCORD_CHANNELS'])
 else:
     active_channels = []
 
