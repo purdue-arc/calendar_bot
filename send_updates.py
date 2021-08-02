@@ -88,9 +88,11 @@ async def on_ready():
             if text_channel.name in active_channels:
                 calendar_events = arc_calendar.collect_today(15)
                 if not calendar_events:
-                    await text_channel.send(
-                        content="No calendar events today."
-                    )
+                    # Commented out to reduce spam
+                    # await text_channel.send(
+                    #     content="No calendar events today."
+                    # )
+                    pass
                 else:
                     for calendar_event in calendar_events:
                         await text_channel.send(
