@@ -1,6 +1,7 @@
 from __future__ import print_function
 import datetime
-import os.path
+import os
+import json
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -17,8 +18,10 @@ def collect_today(n=5):
     """
 
     # Initialize service account credentials
-    creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    info = json.load(os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'])
+    creds = service_account.Credentials.from_service_account_info(
+        SERVICE_ACCOUNT_FILE
+    )
     service = build('calendar', 'v3', credentials=creds)
 
     # Call the Calendar API

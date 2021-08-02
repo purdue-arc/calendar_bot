@@ -1,12 +1,16 @@
 import discord
 import arc_calendar
 import json
+import os
 from datetime import datetime
 
 TIMEZONE_LEN = 6
 
 client = discord.Client()
-discord_config = json.load(open('discord-config.json', 'r'))
+if 'DISCORD_CHANNELS' in os.environ:
+    active_channels = json.load(os.environ['DISCORD_CHANNELS'])
+else:
+    active_channels = []
 
 def construct_calendar_msg(calendar_event):
     """
@@ -81,7 +85,7 @@ def construct_calendar_msg(calendar_event):
 async def on_ready():
     for guild in client.guilds:
         for text_channel in guild.text_channels:
-            if text_channel.name in discord_config['channels']:
+            if text_channel.name in active_channels:
                 calendar_events = arc_calendar.collect_today(15)
                 if not calendar_events:
                     await text_channel.send(
@@ -93,4 +97,7 @@ async def on_ready():
                             embed=construct_calendar_msg(calendar_event)
                         )
 
-client.run(discord_config['token'])
+if 'DISCORD_TOKEN' in os.environ:
+    client.run(os.environ['DISCORD_TOKEN'])
+else:
+    print("DISCORD_TOKEN is not set.")
