@@ -6,7 +6,7 @@ from datetime import datetime
 TIMEZONE_LEN = 6
 
 client = discord.Client()
-discord_config = json.load(open('discord_config.json', 'r'))
+discord_config = json.load(open('discord-config.json', 'r'))
 
 def construct_calendar_msg(calendar_event):
     """
