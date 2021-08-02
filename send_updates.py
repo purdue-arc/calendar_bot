@@ -1,6 +1,5 @@
 import discord
 import my_calendar
-import json
 import os
 import sys
 import redis
@@ -9,8 +8,9 @@ from datetime import datetime
 TIMEZONE_LEN = 6
 
 client = discord.Client()
-r = redis.from_url(os.environ.get("REDIS_URL"))
-active_channels = r.get('DISCORD_CHANNELS')
+r = redis.from_url(os.environ.get('REDIS_URL'))
+active_channels = r.smembers('DISCORD_CHANNELS')
+
 
 def construct_calendar_msg(calendar_event):
     """
@@ -35,7 +35,7 @@ def construct_calendar_msg(calendar_event):
             calendar_event['end']['date'],
             '%Y-%m-%d'
         )
-        
+
         # List first day
         dateMsg = datetime.strftime(
             startDate, "%b %d "
@@ -56,7 +56,7 @@ def construct_calendar_msg(calendar_event):
             calendar_event['end']['dateTime'][:-TIMEZONE_LEN],
             '%Y-%m-%dT%H:%M:%S'
         )
-        
+
         # List first day
         dateMsg = datetime.strftime(
             startDateTime, "%b %d from %I:%M %p "
@@ -81,11 +81,13 @@ def construct_calendar_msg(calendar_event):
     )
     return msg
 
+
 @client.event
 async def on_ready():
     for guild in client.guilds:
         for text_channel in guild.text_channels:
-            if text_channel.name in active_channels:
+            name_bytes = text_channel.name.encode('UTF-8')
+            if active_channels is not None and name_bytes in active_channels:
                 calendar_events = my_calendar.collect_today(15)
                 if not calendar_events:
                     # Commented out to reduce spam
@@ -98,6 +100,7 @@ async def on_ready():
                         await text_channel.send(
                             embed=construct_calendar_msg(calendar_event)
                         )
+    await client.close()
 
 if 'DISCORD_TOKEN' in os.environ:
     client.run(os.environ['DISCORD_TOKEN'])

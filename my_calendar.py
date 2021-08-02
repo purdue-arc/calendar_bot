@@ -11,7 +11,7 @@ def create_service():
     if 'GOOGLE_SERVICE_ACCOUNT_JSON' not in os.environ:
         sys.exit("GOOGLE_SERVICE_ACCOUNT_JSON is not set.")
 
-    info = json.load(os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'])
+    info = json.loads(os.environ['GOOGLE_SERVICE_ACCOUNT_JSON'])
     creds = service_account.Credentials.from_service_account_info(info)
     return build('calendar', 'v3', credentials=creds)
 
@@ -26,12 +26,12 @@ def collect_today(n=5):
     if 'CALENDAR_ID' not in os.environ:
         sys.exit("CALENDAR_ID is not set.")
 
-    calendarId = os.environ('CALENDAR_ID')
+    calendarId = os.environ['CALENDAR_ID']
     events_result = create_service().events().list(calendarId=calendarId,
-                                          timeMin=start.isoformat() + 'Z',
-                                          timeMax=end.isoformat() + 'Z',
-                                          maxResults=n, singleEvents=True,
-                                          orderBy='startTime').execute()
+                                                   timeMin=start.isoformat() + 'Z',
+                                                   timeMax=end.isoformat() + 'Z',
+                                                   maxResults=n, singleEvents=True,
+                                                   orderBy='startTime').execute()
     events = events_result.get('items', [])
     return events
 
@@ -46,11 +46,11 @@ def collect_week(n=25):
     if 'CALENDAR_ID' not in os.environ:
         sys.exit("CALENDAR_ID is not set.")
 
-    calendarId = os.environ('CALENDAR_ID')
+    calendarId = os.environ['CALENDAR_ID']
     events_result = create_service().events().list(calendarId=calendarId,
-                                          timeMin=start.isoformat() + 'Z',
-                                          timeMax=end.isoformat() + 'Z',
-                                          maxResults=n, singleEvents=True,
-                                          orderBy='startTime').execute()
+                                                   timeMin=start.isoformat() + 'Z',
+                                                   timeMax=end.isoformat() + 'Z',
+                                                   maxResults=n, singleEvents=True,
+                                                   orderBy='startTime').execute()
     events = events_result.get('items', [])
     return events
