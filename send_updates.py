@@ -3,15 +3,14 @@ import my_calendar
 import json
 import os
 import sys
+import redis
 from datetime import datetime
 
 TIMEZONE_LEN = 6
 
 client = discord.Client()
-if 'DISCORD_CHANNELS' in os.environ:
-    active_channels = json.loads(os.environ['DISCORD_CHANNELS'])
-else:
-    active_channels = []
+r = redis.from_url(os.environ.get("REDIS_URL"))
+active_channels = r.get('DISCORD_CHANNELS')
 
 def construct_calendar_msg(calendar_event):
     """
