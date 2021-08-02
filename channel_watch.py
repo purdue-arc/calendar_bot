@@ -5,7 +5,7 @@ import json
 
 client = discord.Client()
 if 'DISCORD_CHANNELS' in os.environ:
-    active_channels = json.load(os.environ['DISCORD_CHANNELS'])
+    active_channels = json.loads(os.environ['DISCORD_CHANNELS'])
 else:
     print("DISCORD_CHANNELS not set, using empty list.")
     active_channels = []
