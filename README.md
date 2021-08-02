@@ -13,6 +13,7 @@ The set schedule helps parametrize when updates are sent to discord.
 
 This application relies on two environment variables:
 - `GOOGLE_SERVICE_ACCOUNT_JSON`: json string given by Google API service account
+- `CALENDAR_ID`: ID for respective Google Calendar
 - `DISCORD_TOKEN`: bot token given by Discord
 
 ## Usage

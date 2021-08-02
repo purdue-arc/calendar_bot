@@ -1,7 +1,8 @@
 import discord
-import arc_calendar
+import my_calendar
 import json
 import os
+import sys
 from datetime import datetime
 
 TIMEZONE_LEN = 6
@@ -86,7 +87,7 @@ async def on_ready():
     for guild in client.guilds:
         for text_channel in guild.text_channels:
             if text_channel.name in active_channels:
-                calendar_events = arc_calendar.collect_today(15)
+                calendar_events = my_calendar.collect_today(15)
                 if not calendar_events:
                     # Commented out to reduce spam
                     # await text_channel.send(
@@ -102,4 +103,4 @@ async def on_ready():
 if 'DISCORD_TOKEN' in os.environ:
     client.run(os.environ['DISCORD_TOKEN'])
 else:
-    print("DISCORD_TOKEN is not set.")
+    sys.exit("DISCORD_TOKEN is not set.")

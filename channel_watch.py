@@ -1,5 +1,6 @@
 import discord
 import os
+import sys
 import json
 
 client = discord.Client()
@@ -31,4 +32,4 @@ async def on_disconnect():
 if 'DISCORD_TOKEN' in os.environ:
     client.run(os.environ['DISCORD_TOKEN'])
 else:
-    print("DISCORD_TOKEN is not set.")
+    sys.exit("DISCORD_TOKEN is not set.")
