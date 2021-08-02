@@ -1,9 +1,13 @@
-import discord
-import my_calendar
+"""
+Grabs list of upcoming events, creates embed message and posts to discord.
+"""
+
+from datetime import datetime
 import os
 import sys
+import discord
 import redis
-from datetime import datetime
+import my_calendar
 
 TIMEZONE_LEN = 6
 
@@ -27,70 +31,71 @@ def construct_calendar_msg(calendar_event):
 
     if 'date' in calendar_event['start']:
         # Convert date strings to datetime objects
-        startDate = datetime.strptime(
+        start_date = datetime.strptime(
             calendar_event['start']['date'],
             '%Y-%m-%d'
         )
-        endDate = datetime.strptime(
+        end_date = datetime.strptime(
             calendar_event['end']['date'],
             '%Y-%m-%d'
         )
 
         # List first day
-        dateMsg = datetime.strftime(
-            startDate, "%b %d "
+        date_msg = datetime.strftime(
+            start_date, "%b %d "
         )
 
         # If event lasts more than one day, state range
-        if startDate.date() != endDate.date():
-            dateMsg += datetime.strftime(
-                endDate, "to %b %d"
+        if start_date.date() != end_date.date():
+            date_msg += datetime.strftime(
+                end_date, "to %b %d"
             )
     else:
         # Convert date strings to datetime objects
-        startDateTime = datetime.strptime(
+        start_datetime = datetime.strptime(
             calendar_event['start']['dateTime'][:-TIMEZONE_LEN],
             '%Y-%m-%dT%H:%M:%S'
         )
-        endDateTime = datetime.strptime(
+        end_datetime = datetime.strptime(
             calendar_event['end']['dateTime'][:-TIMEZONE_LEN],
             '%Y-%m-%dT%H:%M:%S'
         )
 
         # List first day
-        dateMsg = datetime.strftime(
-            startDateTime, "%b %d from %I:%M %p "
+        date_msg = datetime.strftime(
+            start_datetime, "%b %d from %I:%M %p "
         )
 
         # If event lasts more than one day, append date end-point
-        if startDateTime.date() != endDateTime.date():
-            dateMsg += datetime.strftime(
-                endDateTime, "to %b %d %I:%M %p"
+        if start_datetime.date() != end_datetime.date():
+            date_msg += datetime.strftime(
+                end_datetime, "to %b %d %I:%M %p"
             )
         else:
-            dateMsg += datetime.strftime(
-                endDateTime, "to %I:%M %p"
+            date_msg += datetime.strftime(
+                end_datetime, "to %I:%M %p"
             )
 
     # Create embedded message
     msg = discord.Embed()
-    msg.description = '[{name}]({event_url})\n {dateMsg}'.format(
+    msg.description = '[{name}]({event_url})\n {date_msg}'.format(
         name=calendar_event['summary'],
         event_url=calendar_event['htmlLink'],
-        dateMsg=dateMsg
+        date_msg=date_msg
     )
     return msg
 
 
 @client.event
 async def on_ready():
+    """Finds active channels and sends out calendar event message"""
     print("Running calendar update")
     for guild in client.guilds:
         for text_channel in guild.text_channels:
             name_bytes = text_channel.name.encode('UTF-8')
             if active_channels is not None and name_bytes in active_channels:
                 print("Collecting events for {}".format(text_channel.name))
-                calendar_events = my_calendar.collect_today(15)
+                calendar_events = my_calendar.collect_today()
                 if not calendar_events:
                     # Commented out to reduce spam
                     # await text_channel.send(

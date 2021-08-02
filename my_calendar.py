@@ -1,3 +1,7 @@
+"""
+Provides functions to access upcoming calendar events.
+"""
+
 import sys
 import datetime
 import os
@@ -7,6 +11,7 @@ from google.oauth2 import service_account
 
 
 def create_service():
+    """Initilizes Google Service account from env json"""
     # Initialize service account credentials
     if 'GOOGLE_SERVICE_ACCOUNT_JSON' not in os.environ:
         sys.exit("GOOGLE_SERVICE_ACCOUNT_JSON is not set.")
@@ -16,9 +21,9 @@ def create_service():
     return build('calendar', 'v3', credentials=creds)
 
 
-def collect_today(n=5):
+def collect_today():
     """
-    Gets n events within 24 hours of current time.
+    Gets events within 24 hours of current time.
     """
     print("Parsing date")
     start = datetime.datetime.utcnow()
@@ -27,19 +32,19 @@ def collect_today(n=5):
     print("Checking calendar ID")
     if 'CALENDAR_ID' not in os.environ:
         sys.exit("CALENDAR_ID is not set.")
+    calendar_id = os.environ['CALENDAR_ID']
 
     print("Obtaining and returing events")
-    calendarId = os.environ['CALENDAR_ID']
-    events_result = create_service().events().list(calendarId=calendarId,
+    events_result = create_service().events().list(calendarId=calendar_id,
                                                    timeMin=start.isoformat() + 'Z',
                                                    timeMax=end.isoformat() + 'Z',
-                                                   maxResults=n, singleEvents=True,
+                                                   singleEvents=True,
                                                    orderBy='startTime').execute()
     events = events_result.get('items', [])
     return events
 
 
-def collect_week(n=25):
+def collect_week():
     """
     Collects n google calendar events within a week of current time.
     """
@@ -50,14 +55,13 @@ def collect_week(n=25):
     print("Checking calendar ID")
     if 'CALENDAR_ID' not in os.environ:
         sys.exit("CALENDAR_ID is not set.")
-
-    calendarId = os.environ['CALENDAR_ID']
+    calendar_id = os.environ['CALENDAR_ID']
 
     print("Obtaining and returing events")
-    events_result = create_service().events().list(calendarId=calendarId,
+    events_result = create_service().events().list(calendarId=calendar_id,
                                                    timeMin=start.isoformat() + 'Z',
                                                    timeMax=end.isoformat() + 'Z',
-                                                   maxResults=n, singleEvents=True,
+                                                   singleEvents=True,
                                                    orderBy='startTime').execute()
     events = events_result.get('items', [])
     return events

@@ -1,8 +1,11 @@
-import discord
-import os
-import redis
+"""
+Polls servers for new channels to send calendar events to.
+"""
+
 import sys
-import json
+import os
+import discord
+import redis
 
 client = discord.Client()
 r = redis.from_url(os.environ.get("REDIS_URL"))
@@ -10,11 +13,15 @@ r = redis.from_url(os.environ.get("REDIS_URL"))
 
 @client.event
 async def on_ready():
+    """Logs when bot is ready to watch"""
     print('We have logged in as {0.user}'.format(client))
 
 
 @client.event
 async def on_message(message):
+    """
+    Waits for '$remindhere' and stores channel for event reminders.
+    """
     if message.author == client.user:
         return
 
