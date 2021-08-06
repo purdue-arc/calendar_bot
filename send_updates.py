@@ -86,32 +86,38 @@ def construct_calendar_msg(calendar_event):
     return msg
 
 
+async def send_update(channel, calendar_events):
+    if not calendar_events:
+        # Commented out to reduce spam
+        # await text_channel.send(
+        #     content="No calendar events today."
+        # )
+        pass
+    else:
+        print("Sending events to {}".format(channel.name))
+        for calendar_event in calendar_events:
+            await channel.send(
+                embed=construct_calendar_msg(calendar_event)
+            )
+
+
 @client.event
 async def on_ready():
     """Finds active channels and sends out calendar event message"""
     print("Running calendar update")
+    calendar_events = my_calendar.collect_today()
     for guild in client.guilds:
         for text_channel in guild.text_channels:
             name_bytes = text_channel.name.encode('UTF-8')
             if active_channels is not None and name_bytes in active_channels:
                 print("Collecting events for {}".format(text_channel.name))
-                calendar_events = my_calendar.collect_today()
-                if not calendar_events:
-                    # Commented out to reduce spam
-                    # await text_channel.send(
-                    #     content="No calendar events today."
-                    # )
-                    pass
-                else:
-                    print("Sending events to {}".format(text_channel.name))
-                    for calendar_event in calendar_events:
-                        await text_channel.send(
-                            embed=construct_calendar_msg(calendar_event)
-                        )
+                await send_update(text_channel, calendar_events)
     print("Calendar update finished")
     await client.close()
 
-if 'DISCORD_TOKEN' in os.environ:
-    client.run(os.environ['DISCORD_TOKEN'])
-else:
-    sys.exit("DISCORD_TOKEN is not set.")
+
+if __name__ == "__main__":
+    if 'DISCORD_TOKEN' in os.environ:
+        client.run(os.environ['DISCORD_TOKEN'])
+    else:
+        sys.exit("DISCORD_TOKEN is not set.")

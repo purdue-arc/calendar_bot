@@ -1,1 +1,1 @@
-watch: python channel_watch.py
+run: python bot.py
