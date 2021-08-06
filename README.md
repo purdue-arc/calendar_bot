@@ -1,4 +1,4 @@
-**Calendar Bot** relays upcoming Google Calendar events.
+**Calendar Bot** relays upcoming Google Calendar events to Discord server channels.
 
 [![Discord](https://img.shields.io/discord/868977679590883420)](https://discord.gg/xPJfDaztvS)
 
